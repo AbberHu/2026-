@@ -1358,7 +1358,119 @@
       background: #991b1b;
     }
 
-/* ===== Butterflies (top-down, symmetric) ===== */
+    /* ===== Mobile responsive (9:16 phones, <= 480px) ===== */
+    @media (max-width: 480px) {
+      .container { padding: 0 12px; }
+      .app-header .container { padding: 0 12px; }
+
+      /* Brand title smaller */
+      .brand-title-row { gap: 6px; }
+      .brand-dxs { font-size: 22px; }
+      .brand-serenade { font-size: 26px; }
+      .brand-subtitle { font-size: 10px; }
+
+      /* Main tabs */
+      .main-tabs { padding: 4px 12px 0; }
+      .main-tab { padding: 8px 8px; font-size: 13px; }
+
+      /* Tab title */
+      .tab-title-row { margin-bottom: 14px; padding: 4px 0 0; }
+      .tab-title { font-size: 15px; }
+
+      /* Records layout: tighter grid */
+      .records-layout {
+        grid-template-columns: 88px minmax(0, 1fr);
+        gap: 8px;
+      }
+      .filter-sidebar { padding: 4px; }
+      .filter-vtab {
+        padding: 8px 8px;
+        font-size: 12px;
+        gap: 4px;
+      }
+      .filter-vtab .badge {
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        font-size: 10px;
+      }
+
+      /* Cards more compact */
+      .list-card, .stats-card {
+        border-radius: 12px;
+      }
+      .stats-card { padding: 12px 14px; }
+      .stats-title { font-size: 11px; margin-bottom: 10px; }
+
+      /* Add-block */
+      .add-block { padding: 26px 14px; }
+      .add-block-icon { width: 48px; height: 48px; margin-bottom: 10px; }
+      .add-block-icon svg { width: 24px; height: 24px; }
+      .add-block-title { font-size: 15px; margin-bottom: 10px; line-height: 1.5; }
+      .add-block-hint { font-size: 10px; }
+      .add-block.compact { padding: 12px 14px; }
+      .add-block.compact .add-block-icon { width: 30px; height: 30px; }
+      .add-block.compact .add-block-icon svg { width: 15px; height: 15px; }
+      .add-block.compact .add-block-title { font-size: 13px; }
+
+      /* Table smaller */
+      th, td {
+        padding: 8px 10px !important;
+        font-size: 12px;
+      }
+
+      /* Stats bar - reduce widths on mobile */
+      .stats-bar-row { font-size: 11px; }
+      .stats-bar-name {
+        width: 7em;
+        min-width: 7em;
+        max-width: 7em;
+        margin-right: 2em;
+      }
+      .stats-count { font-size: 12px; }
+      .stats-count-mascot { width: 20px; height: 20px; }
+      .stats-section-header { margin-bottom: 6px; }
+      .stats-section-name { font-size: 13px; }
+
+      /* Modal */
+      .modal-content { border-radius: 14px 14px 0 0; padding: 0; }
+      .modal-header { padding: 12px 14px; }
+      .modal-header h2 { font-size: 15px; }
+      .form-body { padding: 14px; gap: 12px; }
+      .field label { font-size: 12px; }
+      .text-input { padding: 9px 11px; font-size: 13px; }
+
+      /* Wanted stepper rows */
+      .wanted-stepper-row { padding: 6px 10px; }
+      .wanted-stepper-name { font-size: 13px; }
+      .qty-btn { width: 26px; height: 26px; font-size: 16px; }
+      .qty-value { font-size: 14px; }
+
+      /* Icon picker */
+      .icon-picker { max-height: 150px; }
+      .icon-option { padding: 2px; }
+
+      /* Date buttons in form */
+      .date-btn { padding: 9px; font-size: 13px; }
+
+      /* Category rows in settings */
+      .category-row { padding: 8px 10px; gap: 8px; }
+      .category-row-icon { width: 28px; height: 28px; }
+      .category-row-name { font-size: 13px; }
+      .category-row-meta { font-size: 10px; }
+
+      /* Date checkboxes */
+      .date-checkbox { padding: 5px 10px; font-size: 12px; }
+
+      /* Inventory grid */
+      .inventory-field-label { font-size: 10px; }
+
+      /* Confirm dialog */
+      .confirm-dialog { padding: 18px 16px 14px; }
+      .confirm-message { font-size: 14px; margin-bottom: 16px; }
+    }
+
+    /* ===== Butterflies (top-down, symmetric) ===== */
     .butterflies {
       position: fixed;
       inset: 0;
@@ -2125,7 +2237,7 @@
       });
       const items = [{ key: 'all', label: '全部', count: counts.total, enabled: true }];
       DATE_OPTIONS.forEach(d => {
-        items.push({ key: d, label: dateLabel(d), count: counts[d], enabled: state.enabledDates.includes(d) });
+        items.push({ key: d, label: d, count: counts[d], enabled: state.enabledDates.includes(d) });
       });
       return `
         <aside class="filter-sidebar">
