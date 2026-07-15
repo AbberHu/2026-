@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#2b4763">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,8 +17,8 @@
   <title>DXS 應援交換</title>
     <style>
     :root {
-      --bg: #2b4763;                    /* deep poster navy */
-      --bg-gradient: linear-gradient(180deg, #2b4763 0%, #3d5f7d 100%);
+      --bg: #2d3e55;                    /* deep poster navy (SERENADE ON STAGE) */
+      --bg-gradient: linear-gradient(180deg, #2d3e55 0%, #335f7d 30%, #3f758e 60%, #598192 100%);
       --bg-elevated: #3d5f7d;           /* lighter navy for elevated elements */
       --bg-elevated-2: #4a6d89;
       --surface: #faf6e8;               /* warm cream card */
@@ -109,11 +112,13 @@
       letter-spacing: 0.02em;
     }
     .brand-serenade {
-      font-size: 11px;
-      letter-spacing: 0.3em;
-      color: var(--gold);
-      font-weight: 600;
-      text-transform: uppercase;
+      font-family: 'Great Vibes', 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 400;
+      color: var(--text-on-bg-muted);
+      letter-spacing: 0.05em;
+      line-height: 1;
+      transform: translateY(1px);
     }
     .brand-sub {
       font-size: 12px;
@@ -169,6 +174,97 @@
       font-weight: 700;
     }
     .filter-tab.active .badge { opacity: 1; }
+
+    /* ===== Records tab layout: vertical sidebar + main ===== */
+    .records-layout {
+      display: grid !important;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      .records-layout {
+        grid-template-columns: 160px minmax(0, 1fr);
+        gap: 14px;
+      }
+    }
+    .filter-sidebar {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 6px;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 8px;
+      align-self: start;
+    }
+    .filter-vtab {
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 10px 10px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-sm);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+    }
+    .filter-vtab:hover {
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+    .filter-vtab.active {
+      background: var(--navy);
+      color: var(--navy-fg);
+    }
+    .filter-vtab.disabled,
+    .filter-vtab:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+      color: var(--text-muted);
+    }
+    .filter-vtab.disabled .badge {
+      opacity: 0.6;
+    }
+    .filter-vtab .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      opacity: 1;
+      margin: 0;
+    }
+    .filter-vtab.active .badge {
+      background: rgba(255,255,255,0.18);
+      color: var(--navy-fg);
+    }
+    .filter-vtab-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+    .records-main {
+      min-width: 0;
+    }
 
     /* ===== Main tabs ===== */
     .main-tabs {
@@ -411,14 +507,18 @@
     .add-block:hover .add-block-icon { transform: scale(1.08); }
     .add-block-icon svg { width: 28px; height: 28px; }
     .add-block-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 10px;
+      line-height: 1.5;
+      letter-spacing: 0.02em;
     }
     .add-block-hint {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
+      font-weight: 400;
+      opacity: 0.75;
     }
 
     /* Compact variant */
@@ -558,6 +658,43 @@
       background: var(--navy);
       color: var(--navy-fg);
       border-color: var(--navy);
+    }
+    .date-btn.disabled,
+    .date-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: rgba(60, 40, 15, 0.06);
+      color: var(--text-muted);
+      border-color: var(--border);
+    }
+    .date-btn.disabled.selected,
+    .date-btn:disabled.selected {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+      border-color: var(--border);
+    }
+
+    .inventory-field.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .inventory-field.disabled input {
+      background: rgba(60, 40, 15, 0.06);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      border-color: var(--border);
+    }
+    .inventory-field.disabled .inventory-field-label {
+      color: var(--text-muted);
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: -2px;
+      margin-bottom: 8px;
+      line-height: 1.4;
     }
 
     .text-input {
@@ -1055,14 +1192,13 @@
       margin-bottom: 8px;
     }
     .section-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      letter-spacing: 0.08em;
       display: flex;
       align-items: center;
       gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
     }
     .section-title-count {
       display: inline-flex;
@@ -1075,6 +1211,8 @@
       border: 1px solid var(--border);
       border-radius: 999px;
       font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
     }
     .section-divider {
       display: flex;
@@ -1377,12 +1515,6 @@
     <div class="container main-tabs">
       <button class="main-tab active" data-main-tab="records">交換記錄</button>
       <button class="main-tab" data-main-tab="stats">應援物數量統計</button>
-    </div>
-    <div class="container filter-tabs" id="filter-tabs">
-      <button class="filter-tab active" data-filter="all">全部 <span class="badge">0</span></button>
-      <button class="filter-tab" data-filter="7/24">7/24 (五) <span class="badge">0</span></button>
-      <button class="filter-tab" data-filter="7/25">7/25 (六) <span class="badge">0</span></button>
-      <button class="filter-tab" data-filter="7/26">7/26 (日) <span class="badge">0</span></button>
     </div>
   </header>
 
@@ -1769,8 +1901,8 @@
             <div class="stats-title">${ICONS.star} 應援物統計</div>
             <div class="add-block" data-action="add-category">
               <div class="add-block-icon">${ICONS.star}</div>
-              <div class="add-block-title">新增類別</div>
-              <div class="add-block-hint">點擊這裡建立第一個應援物類別</div>
+              <div class="add-block-title">還沒設定任何應援物類別</div>
+              <div class="add-block-hint">請點擊星星進行新增</div>
             </div>
           </div>
         `;
@@ -1856,32 +1988,14 @@
     }
 
     function renderHeader() {
-      const counts = { total: state.entries.length };
-      DATE_OPTIONS.forEach(d => {
-        counts[d] = state.entries.filter(e => e.date === d).length;
-      });
       // Set active main tab
       document.querySelectorAll('.main-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.mainTab === state.activeTab);
       });
-      // Show/hide filter tabs (only visible on records tab)
-      const filterTabs = document.getElementById('filter-tabs');
-      if (filterTabs) filterTabs.style.display = state.activeTab === 'records' ? 'flex' : 'none';
       // Show/hide export button (only on records tab)
       const exportBtn = document.getElementById('btn-export');
       if (exportBtn) exportBtn.style.display = state.activeTab === 'records' ? 'inline-flex' : 'none';
-      document.getElementById('count-total').textContent = counts.total;
-      const tabs = document.querySelectorAll('#filter-tabs .filter-tab');
-      tabs.forEach(tab => {
-        const f = tab.dataset.filter;
-        const badge = tab.querySelector('.badge');
-        badge.textContent = f === 'all' ? counts.total : counts[f];
-        tab.classList.toggle('active', state.filter === f);
-        // Hide tab if this date is not enabled
-        if (f !== 'all') {
-          tab.style.display = state.enabledDates.includes(f) ? '' : 'none';
-        }
-      });
+      document.getElementById('count-total').textContent = state.entries.length;
       document.getElementById('btn-export').disabled = getSortedEntries().length === 0;
     }
 
@@ -1898,11 +2012,17 @@
       if (entries.length === 0) {
         const msg = state.filter === 'all' ? '還沒有任何記錄' : `${state.filter} 尚無記錄`;
         // Show a clickable add-block for new record + stats card below
+        const sidebarHtml = renderFilterSidebar();
         container.innerHTML = tabTitleHtml + `
-          <div class="add-block" data-action="add-record">
-            <div class="add-block-icon">${ICONS.star}</div>
-            <div class="add-block-title">記得設定好自己的應援物項目和數量</div>
-            <div class="add-block-hint">再開始交換喔！</div>
+          <div class="records-layout">
+            ${sidebarHtml}
+            <div class="records-main">
+              <div class="add-block" data-action="add-record">
+                <div class="add-block-icon">${ICONS.star}</div>
+                <div class="add-block-title">記得設定好自己的應援物項目和數量，<br>再開始新增交換紀錄喔！</div>
+                <div class="add-block-hint">請點擊星星進行新增</div>
+              </div>
+            </div>
           </div>
         ` + statsHtml;
         return;
@@ -1958,26 +2078,32 @@
           </tr>`;
       }).join('');
 
+      const sidebarHtml = renderFilterSidebar();
       container.innerHTML = tabTitleHtml + `
-        <div class="list-card">
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>場次</th>
-                  <th>應援物貼文</th>
-                  <th>交換物</th>
-                  <th>碩/寛</th>
-                  <th>備註</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>${rowsHtml}</tbody>
-            </table>
-          </div>
-          <div class="add-block compact" data-action="add-record">
-            <div class="add-block-icon">${ICONS.star}</div>
-            <div class="add-block-title">新增紀錄</div>
+        <div class="records-layout">
+          ${sidebarHtml}
+          <div class="records-main">
+            <div class="list-card">
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>場次</th>
+                      <th>應援物貼文</th>
+                      <th>交換物</th>
+                      <th>碩/寛</th>
+                      <th>備註</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>${rowsHtml}</tbody>
+                </table>
+              </div>
+              <div class="add-block compact" data-action="add-record">
+                <div class="add-block-icon">${ICONS.star}</div>
+                <div class="add-block-title">新增紀錄</div>
+              </div>
+            </div>
           </div>
         </div>
         ` + statsHtml;
@@ -1992,6 +2118,27 @@
       }
     }
 
+    function renderFilterSidebar() {
+      const counts = { total: state.entries.length };
+      DATE_OPTIONS.forEach(d => {
+        counts[d] = state.entries.filter(e => e.date === d).length;
+      });
+      const items = [{ key: 'all', label: '全部', count: counts.total, enabled: true }];
+      DATE_OPTIONS.forEach(d => {
+        items.push({ key: d, label: dateLabel(d), count: counts[d], enabled: state.enabledDates.includes(d) });
+      });
+      return `
+        <aside class="filter-sidebar">
+          ${items.map(item => `
+            <button class="filter-vtab ${state.filter === item.key ? 'active' : ''} ${!item.enabled ? 'disabled' : ''}" data-filter="${escapeHtml(item.key)}" ${!item.enabled ? 'disabled' : ''}>
+              <span class="filter-vtab-label">${escapeHtml(item.label)}</span>
+              <span class="badge">${item.count}</span>
+            </button>
+          `).join('')}
+        </aside>
+      `;
+    }
+
     function renderRecordsTab() {
       renderList();  // Existing records rendering
     }
@@ -2003,131 +2150,11 @@
         ? `<div class="save-error">${escapeHtml(state.saveError)}</div>`
         : '';
 
-      // Enabled dates section
-      const enabledDatesHtml = `
-        <div class="enabled-dates-section">
-          <div class="section-title">啟用場次</div>
-          <div class="enabled-dates-row">
-            ${DATE_OPTIONS.map(d => {
-              const checked = state.enabledDates.includes(d);
-              return `
-                <label class="date-checkbox ${checked ? 'checked' : ''}">
-                  <input type="checkbox" data-action="toggle-date" data-date="${escapeHtml(d)}" ${checked ? 'checked' : ''}>
-                  <span>${escapeHtml(dateLabel(d))}</span>
-                </label>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
-
-      // Category list
-      const f = state.categoryForm;
-      const isEditing = !!state.editingCategoryId;
-
-      const catListHtml = state.categories.length === 0
-        ? '<div style="padding:14px;text-align:center;color:var(--text-muted);background:var(--surface-alt);border-radius:var(--radius);font-size:13px">尚未新增任何類別</div>'
-        : state.categories.map(cat => {
-            const palette = CATEGORY_COLOR_PALETTE[cat.color % CATEGORY_COLOR_PALETTE.length];
-            const invParts = activeDates().map(d => (cat.inventory && cat.inventory[d]) || 0);
-            const invText = '庫存 ' + invParts.join(' · ');
-            const beingEdited = state.editingCategoryId === cat.id;
-            return `
-              <div class="category-row ${beingEdited ? 'editing' : ''}" data-cat-id="${escapeHtml(cat.id)}">
-                <div class="category-row-icon" style="background:${palette.bg}">
-                  ${renderCatIcon(cat.icon, 18)}
-                </div>
-                <div class="category-row-body">
-                  <div class="category-row-name">${escapeHtml(cat.name)}</div>
-                  <div class="category-row-meta">${invText}</div>
-                </div>
-                <div class="category-row-actions">
-                  <button class="icon-btn" data-action="edit-category" data-cat-id="${escapeHtml(cat.id)}" aria-label="編輯">${ICONS.pencil}</button>
-                  <button class="icon-btn danger" data-action="delete-category" data-cat-id="${escapeHtml(cat.id)}" aria-label="刪除">${ICONS.trash}</button>
-                </div>
-              </div>
-            `;
-          }).join('');
-
-      // Icon picker options
-      const iconOptions = [
-        { key: 'doa', preview: `<img src="${CATEGORY_ICONS.doa}" alt="">` },
-        { key: 'boo', preview: `<img src="${CATEGORY_ICONS.boo}" alt="">` },
-        { key: 'frog', preview: `<img src="${CATEGORY_ICONS.frog}" alt="">` },
-        { key: 'seventeen', preview: `<img src="${CATEGORY_ICONS.seventeen}" alt="">` },
-        { key: 'tiger', preview: `<img src="${CATEGORY_ICONS.tiger}" alt="">` },
-        { key: 'bunny', preview: `<img src="${CATEGORY_ICONS.bunny}" alt="">` },
-        { key: 'cats', preview: `<img src="${CATEGORY_ICONS.cats}" alt="">` },
-        { key: 'pom', preview: `<img src="${CATEGORY_ICONS.pom}" alt="">` },
-        { key: 'ninja', preview: `<img src="${CATEGORY_ICONS.ninja}" alt="">` },
-        { key: 'fox', preview: `<img src="${CATEGORY_ICONS.fox}" alt="">` },
-        { key: 'ricebowl', preview: `<img src="${CATEGORY_ICONS.ricebowl}" alt="">` },
-        { key: 'pinkbunny', preview: `<img src="${CATEGORY_ICONS.pinkbunny}" alt="">` },
-        { key: 'star', preview: ICONS.star },
-        ...EMOJI_OPTIONS.map(e => ({ key: 'emoji:' + e, preview: `<span style="font-size:22px">${e}</span>` }))
-      ];
-      const iconsHtml = iconOptions.map(opt => `
-        <button class="icon-option ${f.icon === opt.key ? 'selected' : ''}" data-action="set-cat-icon" data-icon="${escapeHtml(opt.key)}">
-          ${opt.preview}
-        </button>
-      `).join('');
-
-      // Inventory inputs - only for enabled dates
-      const invInputsHtml = activeDates().map(d => {
-        const dSafe = d.replace('/', '');
-        return `
-          <div class="inventory-field">
-            <span class="inventory-field-label">${escapeHtml(dateLabel(d))}</span>
-            <input type="number" class="text-input" id="cat-inv-${dSafe}" data-date="${escapeHtml(d)}" value="${(f.inventory && f.inventory[d]) || 0}" min="0" max="999">
-          </div>
-        `;
-      }).join('');
-      const invColumns = activeDates().length;
-
-      // Stats display (inventory bars) - shows only if has categories
-      const statsCardHtml = state.categories.length > 0 ? renderStatsCard() : '';
-
-      container.innerHTML = `
-        <div class="tab-title-row">
-          <h2 class="tab-title">應援物數量統計</h2>
-        </div>
-
-        ${enabledDatesHtml}
-
-        <div class="stats-card">
-          <div class="section-title">類別管理</div>
-          <div class="category-list">${catListHtml}</div>
-
-          <div class="section-divider">
-            <span>${isEditing ? '編輯類別' : '新增類別'}</span>
-          </div>
-
-          <div class="field">
-            <label>名稱</label>
-            <input type="text" class="text-input" id="cat-name-input" value="${escapeHtml(f.name)}" placeholder="例：碩" maxlength="10">
-          </div>
-
-          <div class="field">
-            <label>圖示</label>
-            <div class="icon-picker">${iconsHtml}</div>
-          </div>
-
-          ${invColumns > 0 ? `
-            <div class="field">
-              <label>庫存數量</label>
-              <div class="inventory-grid" style="grid-template-columns: repeat(${invColumns}, 1fr)">${invInputsHtml}</div>
-            </div>
-          ` : ''}
-
-          <div class="form-buttons">
-            <button class="btn-primary form-submit" data-action="save-category">${isEditing ? '更新' : '＋ 新增類別'}</button>
-            ${isEditing ? '<button class="btn-cancel-edit" data-action="cancel-edit">取消編輯</button>' : ''}
-          </div>
-        </div>
-
-        ${statsCardHtml}
-      `;
+      const tabTitleHtml = '<div class="tab-title-row"><h2 class="tab-title">應援物數量統計</h2></div>';
+      const statsHtml = renderStatsCard();
+      container.innerHTML = tabTitleHtml + statsHtml;
     }
+
 
 
     // ============== Modal / Form ==============
@@ -2145,7 +2172,7 @@
       } else {
         state.editingId = null;
         state.form = {
-          date: '7/24',
+          date: state.enabledDates[0] || '7/24',
           threadsUrl: '',
           exchangeItems: [''],
           wanted: [],
@@ -2193,16 +2220,19 @@
         <div class="modal-header">
           <button class="close-btn" id="btn-close-form" aria-label="關閉">${ICONS.x}</button>
           <h2>${state.editingId ? '編輯記錄' : '新增記錄'}</h2>
-          <div style="width:36px"></div>
+          <button class="btn-primary" id="btn-save-form">儲存</button>
         </div>
         <div class="form-body">
           <div class="field">
             <label>場次</label>
             <div class="date-picker">
-              ${DATE_OPTIONS.map(d => `
-                <button class="date-btn ${d === f.date ? 'selected' : ''}"
-                        data-action="set-date" data-date="${escapeHtml(d)}">${escapeHtml(d)}</button>
-              `).join('')}
+              ${DATE_OPTIONS.map(d => {
+                const enabled = state.enabledDates.includes(d);
+                return `
+                <button class="date-btn ${d === f.date ? 'selected' : ''} ${!enabled ? 'disabled' : ''}"
+                        data-action="set-date" data-date="${escapeHtml(d)}" ${!enabled ? 'disabled' : ''}>${escapeHtml(dateLabel(d))}</button>
+              `;
+              }).join('')}
             </div>
           </div>
 
@@ -2261,10 +2291,6 @@
             <label>備註</label>
             <textarea class="text-input" id="input-notes" rows="2"
                       placeholder="例：各1 + 歌詞貼紙">${escapeHtml(f.notes)}</textarea>
-          </div>
-
-          <div class="form-buttons">
-            <button class="btn-primary form-submit" id="btn-save-form">${state.editingId ? '更新' : '＋ 儲存記錄'}</button>
           </div>
         </div>`;
     }
@@ -2398,13 +2424,15 @@
         </button>
       `).join('');
 
-      // Inventory inputs for each date
-      const invInputsHtml = DATE_OPTIONS.map(d => {
+      // Show ALL dates but disable input for non-enabled ones
+      const invDates = DATE_OPTIONS;
+      const invInputsHtml = invDates.map(d => {
         const dSafe = d.replace('/', '');
+        const enabled = state.enabledDates.includes(d);
         return `
-          <div class="inventory-field">
-            <span class="inventory-field-label">${escapeHtml(d)}</span>
-            <input type="number" class="text-input" id="cat-inv-${dSafe}" data-date="${escapeHtml(d)}" value="${(f.inventory && f.inventory[d]) || 0}" min="0" max="999">
+          <div class="inventory-field ${enabled ? '' : 'disabled'}">
+            <span class="inventory-field-label">${escapeHtml(dateLabel(d))}</span>
+            <input type="text" class="text-input" id="cat-inv-${dSafe}" data-date="${escapeHtml(d)}" value="${(f.inventory && f.inventory[d]) || 0}" inputmode="numeric" pattern="[0-9]*" maxlength="3" ${enabled ? '' : 'disabled'}>
           </div>
         `;
       }).join('');
@@ -2413,15 +2441,27 @@
         <div class="modal-header">
           <button class="close-btn" id="btn-close-settings" aria-label="關閉">${ICONS.x}</button>
           <h2>類別管理</h2>
-          <div style="width:36px"></div>
+          <button class="btn-primary" data-action="save-settings">儲存</button>
         </div>
         <div class="form-body">
-          <div class="settings-section-hint">
-            管理你想交換的類別。「想交換」時可以複選多個類別、各自選數量（例如碩 ×2 + 寛 ×1）。
+          <div class="field">
+            <label>應援場次</label>
+            <div class="field-hint">選擇各項應援物會發放的場次</div>
+            <div class="enabled-dates-row">
+              ${DATE_OPTIONS.map(d => {
+                const checked = state.enabledDates.includes(d);
+                return `
+                  <label class="date-checkbox ${checked ? 'checked' : ''}">
+                    <input type="checkbox" data-action="toggle-date" data-date="${escapeHtml(d)}" ${checked ? 'checked' : ''}>
+                    <span>${escapeHtml(dateLabel(d))}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
           </div>
 
           <div class="category-list-section">
-            <div class="section-title">現有類別 <span class="section-title-count">${state.categories.length}</span></div>
+            <div class="section-title">應援物列表 <span class="section-title-count">${state.categories.length}</span></div>
             <div class="category-list">${catListHtml}</div>
           </div>
 
@@ -2440,8 +2480,8 @@
           </div>
 
           <div class="field">
-            <label>庫存數量</label>
-            <div class="inventory-grid inventory-grid-3">${invInputsHtml}</div>
+            <label>數量</label>
+            <div class="inventory-grid" style="grid-template-columns: repeat(${invDates.length}, 1fr)">${invInputsHtml}</div>
           </div>
 
           <div class="form-buttons">
@@ -2491,11 +2531,19 @@
         return;
       }
 
-      // Collect inventory from all date inputs
+      // Collect inventory only for enabled dates; disabled dates keep existing values
       const inventory = {};
+      const existing = state.editingCategoryId ? getCategoryById(state.editingCategoryId) : null;
       DATE_OPTIONS.forEach(d => {
-        const el = document.getElementById('cat-inv-' + d.replace('/', ''));
-        inventory[d] = el ? Math.max(0, parseInt(el.value, 10) || 0) : 0;
+        if (state.enabledDates.includes(d)) {
+          const el = document.getElementById('cat-inv-' + d.replace('/', ''));
+          inventory[d] = el ? Math.max(0, parseInt(el.value, 10) || 0) : 0;
+        } else if (existing && existing.inventory && existing.inventory[d] !== undefined) {
+          // Preserve inventory for disabled dates
+          inventory[d] = existing.inventory[d];
+        } else {
+          inventory[d] = 0;
+        }
       });
 
       const catData = {
@@ -2601,10 +2649,20 @@
           render();
         });
       } else if (action === 'set-date') {
+        // Only allow selecting enabled dates
+        if (!state.enabledDates.includes(t.dataset.date)) return;
         state.form.date = t.dataset.date;
         // sync current input values into state.form so re-render preserves them
         syncFormStateFromDOM();
         renderForm();
+      } else if (action === 'save-settings') {
+        // If the form has a name filled, save that category first
+        const nameEl = document.getElementById('cat-name-input');
+        if (nameEl && nameEl.value.trim()) {
+          saveCategoryForm();
+        }
+        closeSettings();
+        return;
       } else if (action === 'add-record') {
         openForm();
         return;
@@ -2669,7 +2727,7 @@
         // Sync current form field values first
         const nameEl = document.getElementById('cat-name-input');
         if (nameEl) state.categoryForm.name = nameEl.value;
-        DATE_OPTIONS.forEach(d => {
+        activeDates().forEach(d => {
           const el = document.getElementById('cat-inv-' + d.replace('/', ''));
           if (el) state.categoryForm.inventory[d] = parseInt(el.value, 10) || 0;
         });
@@ -2702,22 +2760,29 @@
     document.addEventListener('change', (e) => {
       const t = e.target;
       if (t.dataset && t.dataset.action === 'toggle-date') {
+        // Sync current form values before re-render to preserve them
+        const nameEl = document.getElementById('cat-name-input');
+        if (nameEl) state.categoryForm.name = nameEl.value;
+        DATE_OPTIONS.forEach(d => {
+          const el = document.getElementById('cat-inv-' + d.replace('/', ''));
+          if (el && !el.disabled) state.categoryForm.inventory[d] = parseInt(el.value, 10) || 0;
+        });
+
         const d = t.dataset.date;
         if (t.checked && !state.enabledDates.includes(d)) {
           state.enabledDates.push(d);
         } else if (!t.checked && state.enabledDates.includes(d)) {
           state.enabledDates = state.enabledDates.filter(x => x !== d);
-          if (state.enabledDates.length === 0) {
-            // Don't allow all dates to be disabled - revert
-            state.enabledDates = [d];
-            t.checked = true;
-          }
         }
         persistEnabledDates();
         if (state.filter !== 'all' && !state.enabledDates.includes(state.filter)) {
           state.filter = 'all';
         }
         render();
+        // Re-render settings modal in-place (does NOT close/reopen modal)
+        if (!document.getElementById('settings-modal').classList.contains('hidden')) {
+          renderSettings();
+        }
       }
     });
 
