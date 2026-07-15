@@ -1098,22 +1098,24 @@
     }
     .stats-counts-row {
       display: flex;
-      gap: 14px;
-      margin-bottom: 10px;
+      gap: 18px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
+      row-gap: 10px;
     }
     .stats-count {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       font-size: 13px;
+      flex-shrink: 0;
     }
     .stats-count-mascot {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border-radius: 999px;
       overflow: hidden;
       flex-shrink: 0;
@@ -1403,10 +1405,10 @@
       .stats-title { font-size: 11px; margin-bottom: 10px; }
 
       /* Add-block */
-      .add-block { padding: 26px 14px; }
-      .add-block-icon { width: 48px; height: 48px; margin-bottom: 10px; }
-      .add-block-icon svg { width: 24px; height: 24px; }
-      .add-block-title { font-size: 15px; margin-bottom: 10px; line-height: 1.5; }
+      .add-block { padding: 22px 12px; }
+      .add-block-icon { width: 44px; height: 44px; margin-bottom: 8px; }
+      .add-block-icon svg { width: 22px; height: 22px; }
+      .add-block-title { font-size: 13px; margin-bottom: 8px; line-height: 1.6; letter-spacing: 0.01em; }
       .add-block-hint { font-size: 10px; }
       .add-block.compact { padding: 12px 14px; }
       .add-block.compact .add-block-icon { width: 30px; height: 30px; }
@@ -1427,8 +1429,9 @@
         max-width: 7em;
         margin-right: 2em;
       }
-      .stats-count { font-size: 12px; }
-      .stats-count-mascot { width: 20px; height: 20px; }
+      .stats-count { font-size: 12px; gap: 5px; }
+      .stats-count-mascot { width: 24px; height: 24px; }
+      .stats-counts-row { gap: 14px; row-gap: 8px; }
       .stats-section-header { margin-bottom: 6px; }
       .stats-section-name { font-size: 13px; }
 
@@ -2020,8 +2023,20 @@
         `;
       }
       const stats = calculateStats();
-      const sections = DATE_OPTIONS.map(d => ({ key: d, label: d, data: stats.perDate[d] }));
-      sections.push({ key: 'total', label: '合計', data: stats.total, isTotal: true });
+      const sections = DATE_OPTIONS
+        .filter(d => {
+          // Only show date if has entries OR any category has inventory > 0 for that date
+          const perDate = stats.perDate[d];
+          if (perDate && perDate.entryCount > 0) return true;
+          return state.categories.some(cat =>
+            cat.inventory && (cat.inventory[d] || 0) > 0
+          );
+        })
+        .map(d => ({ key: d, label: d, data: stats.perDate[d] }));
+      // Only show 合計 if there is more than one date section
+      if (sections.length >= 2) {
+        sections.push({ key: 'total', label: '合計', data: stats.total, isTotal: true });
+      }
 
       const barClass = (rem, max) => {
         if (rem < 0) return 'danger';
@@ -2033,15 +2048,22 @@
       const categories = state.categories;
 
       const sectionsHtml = sections.map(sec => {
-        // Count row: quantity wanted per category
-        const catCountsHtml = categories.length === 0
+        // Count row: only show categories with inventory or usage
+        const relevantCats = categories.filter(cat => {
+          const inv = cat.inventory || {};
+          if (sec.key === 'total') {
+            return DATE_OPTIONS.some(d => (inv[d] || 0) > 0) || (sec.data.cards[cat.id] || 0) > 0;
+          }
+          return (inv[sec.key] || 0) > 0 || (sec.data.cards[cat.id] || 0) > 0;
+        });
+        const catCountsHtml = relevantCats.length === 0
           ? '<span style="color:var(--text-muted);font-size:12px">尚未設定類別</span>'
-          : categories.map(cat => {
+          : relevantCats.map(cat => {
               const count = sec.data.cards[cat.id] || 0;
               return `
                 <span class="stats-count">
                   <span class="stats-count-mascot" style="background:${CATEGORY_COLOR_PALETTE[cat.color % CATEGORY_COLOR_PALETTE.length].bg}">
-                    ${renderCatIcon(cat.icon, 14)}
+                    ${renderCatIcon(cat.icon, 24)}
                   </span>
                   <span class="stats-count-label">${escapeHtml(cat.name)}</span>
                   <span class="stats-count-num">${count}</span>
@@ -2049,8 +2071,14 @@
               `;
             }).join('');
 
-        // Bars for each category with inventory
-        const barsHtml = categories.map(cat => {
+        // Bars: only for categories with inventory > 0 for this section
+        const barsHtml = categories.filter(cat => {
+          const inv = cat.inventory || {};
+          if (sec.key === 'total') {
+            return DATE_OPTIONS.some(d => (inv[d] || 0) > 0) || (sec.data.cards[cat.id] || 0) > 0;
+          }
+          return (inv[sec.key] || 0) > 0 || (sec.data.cards[cat.id] || 0) > 0;
+        }).map(cat => {
           const inv = cat.inventory || { '7/24': 0, '7/25': 0 };
           const max = sec.key === 'total' ? DATE_OPTIONS.reduce((s, d) => s + (inv[d] || 0), 0) : (inv[sec.key] || 0);
           const used = sec.data.cards[cat.id] || 0;
