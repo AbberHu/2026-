@@ -664,7 +664,7 @@
       margin-bottom: 6px;
     }
 
-    .date-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .date-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .date-btn {
       padding: 11px;
       background: white;
@@ -807,15 +807,15 @@
     .wanted-stepper-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 10px;
       padding: 8px 12px;
       background: white;
       border: 2px solid var(--border);
       border-radius: var(--radius);
       transition: all 0.15s;
     }
-    .wanted-stepper-row.active {
-      /* colors set inline based on category palette */
+    .wanted-stepper-row.no-inv {
+      opacity: 0.5;
     }
     .wanted-stepper-info {
       display: flex;
@@ -823,6 +823,20 @@
       gap: 10px;
       flex: 1;
       min-width: 0;
+    }
+    .stepper-remaining {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: rgba(60, 40, 15, 0.06);
+      padding: 3px 8px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .stepper-remaining.zero {
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
     }
     .wanted-stepper-icon {
       display: inline-flex;
@@ -1415,19 +1429,12 @@
       .tab-title-row { margin-bottom: 14px; padding: 4px 0 0; }
       .tab-title { font-size: 15px; }
 
-      /* Records layout: tighter grid, narrower sidebar */
-      .records-layout {
-        grid-template-columns: 72px minmax(0, 1fr);
-        gap: 6px;
-      }
-      .filter-sidebar { padding: 4px; }
+      /* Horizontal filter - slightly more compact */
+      .filter-sidebar { padding: 4px; gap: 2px; }
       .filter-vtab {
-        padding: 7px 6px;
-        font-size: 11px;
-        gap: 3px;
-      }
-      .filter-vtab-label {
-        flex: 0 1 auto;
+        padding: 7px 10px;
+        font-size: 12px;
+        gap: 4px;
       }
       .filter-vtab .badge {
         min-width: 16px;
@@ -1526,13 +1533,9 @@
       .container { padding: 0 10px; }
       .brand-dxs { font-size: 20px; }
       .brand-serenade { font-size: 24px; }
-      .records-layout {
-        grid-template-columns: 64px minmax(0, 1fr);
-        gap: 4px;
-      }
       .filter-vtab {
-        padding: 6px 5px;
-        font-size: 10px;
+        padding: 6px 8px;
+        font-size: 11px;
       }
       .filter-vtab .badge {
         min-width: 14px;
@@ -1550,10 +1553,6 @@
       .add-block-icon svg { width: 20px; height: 20px; }
     }
 
-    
-    @media (max-height: 600px) {
-      .filter-sidebar { position: static; }
-    }
     /* ===== Butterflies (top-down, symmetric) ===== */
     .butterflies {
       position: fixed;
@@ -2378,6 +2377,19 @@
 
 
 
+    function getRemainingQty(categoryId, date, currentEditingId) {
+      const cat = getCategoryById(categoryId);
+      if (!cat || !cat.inventory) return Infinity;
+      const maxInv = cat.inventory[date] || 0;
+      const usedByOthers = state.entries
+        .filter(e => e.date === date && e.id !== currentEditingId)
+        .reduce((sum, e) => {
+          const w = (e.wanted || []).find(x => x.categoryId === categoryId);
+          return sum + (w ? w.quantity : 0);
+        }, 0);
+      return maxInv - usedByOthers;
+    }
+
     // ============== Modal / Form ==============
     function openForm(entry) {
       if (entry) {
@@ -2490,16 +2502,21 @@
                     const style = active
                       ? `background:${palette.bg};border-color:${palette.border}`
                       : '';
+                    // Calculate remaining inventory for this cat/date
+                    const remaining = getRemainingQty(cat.id, f.date, state.editingId);
+                    const atMax = qty >= remaining;
+                    const noInventory = (cat.inventory && (cat.inventory[f.date] || 0) === 0);
                     return `
-                      <div class="wanted-stepper-row ${active ? 'active' : ''}" style="${style}" data-cat-id="${escapeHtml(cat.id)}">
+                      <div class="wanted-stepper-row ${active ? 'active' : ''} ${noInventory ? 'no-inv' : ''}" style="${style}" data-cat-id="${escapeHtml(cat.id)}">
                         <div class="wanted-stepper-info">
                           <span class="wanted-stepper-icon">${renderCatIcon(cat.icon, 24)}</span>
                           <span class="wanted-stepper-name">${escapeHtml(cat.name)}</span>
                         </div>
+                        <div class="stepper-remaining ${remaining <= 0 ? 'zero' : ''}">剩 ${Math.max(0, remaining - qty)}</div>
                         <div class="qty-stepper">
                           <button class="qty-btn" data-action="qty-decr" data-cat-id="${escapeHtml(cat.id)}" ${qty === 0 ? 'disabled' : ''}>−</button>
                           <span class="qty-value">${qty}</span>
-                          <button class="qty-btn" data-action="qty-incr" data-cat-id="${escapeHtml(cat.id)}">+</button>
+                          <button class="qty-btn" data-action="qty-incr" data-cat-id="${escapeHtml(cat.id)}" ${atMax ? 'disabled' : ''}>+</button>
                         </div>
                       </div>
                     `;
@@ -2911,8 +2928,20 @@
           w = { categoryId: catId, quantity: 0 };
           state.form.wanted.push(w);
         }
-        if (action === 'qty-incr') w.quantity++;
-        else w.quantity = Math.max(0, w.quantity - 1);
+        if (action === 'qty-incr') {
+          // Check remaining inventory for this date
+          const remaining = getRemainingQty(catId, state.form.date, state.editingId);
+          // My own quantity in this record is already counted "for me", not against.
+          // Since we passed currentEditingId, others don't include my record's usage.
+          // So remaining is the true max I can go to.
+          if (w.quantity >= remaining) {
+            // At limit - don't increment
+            return;
+          }
+          w.quantity++;
+        } else {
+          w.quantity = Math.max(0, w.quantity - 1);
+        }
         // Remove entries with 0 quantity to keep data clean
         state.form.wanted = state.form.wanted.filter(x => x.quantity > 0);
         renderForm();
