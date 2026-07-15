@@ -276,6 +276,9 @@
     }
     .records-main {
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     /* ===== Main tabs ===== */
@@ -314,7 +317,10 @@
       box-shadow: var(--shadow-md);
       overflow: hidden;
     }
-    .table-wrap { overflow-x: auto; }
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
     table {
       width: 100%;
       min-width: 700px;
@@ -397,6 +403,12 @@
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
+      max-width: 100%;
+    }
+    @media (max-width: 640px) {
+      .wanted-chips-list { gap: 3px; }
+      .wanted-chip { font-size: 11px; padding: 2px 6px; }
+      .wanted-chip img { width: 14px !important; height: 14px !important; }
     }
     .qty-badge {
       display: inline-block;
@@ -494,7 +506,8 @@
       display: block;
       width: 100%;
       color: var(--text-muted);
-      margin-bottom: 12px;
+      margin-top: 12px;
+      margin-bottom: 0;
     }
     .add-block:hover {
       background: var(--surface-alt);
@@ -550,14 +563,10 @@
     .add-block.compact .add-block-title { margin: 0; }
     .add-block.compact .add-block-hint { display: none; }
 
-    /* Inside stats card or list-card, add spacing */
-    .stats-card > .add-block,
-    .list-card > .add-block {
+    /* Add blocks below cards (siblings) */
+    .list-card + .add-block,
+    .stats-card + .add-block {
       margin-top: 12px;
-      margin-bottom: 0;
-    }
-    .list-card > .add-block {
-      margin: 12px 16px 16px;
     }
 
     /* ===== Modal ===== */
@@ -1406,22 +1415,25 @@
       .tab-title-row { margin-bottom: 14px; padding: 4px 0 0; }
       .tab-title { font-size: 15px; }
 
-      /* Records layout: tighter grid */
+      /* Records layout: tighter grid, narrower sidebar */
       .records-layout {
-        grid-template-columns: 88px minmax(0, 1fr);
-        gap: 8px;
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 6px;
       }
       .filter-sidebar { padding: 4px; }
       .filter-vtab {
-        padding: 8px 8px;
-        font-size: 12px;
-        gap: 4px;
+        padding: 7px 6px;
+        font-size: 11px;
+        gap: 3px;
+      }
+      .filter-vtab-label {
+        flex: 0 1 auto;
       }
       .filter-vtab .badge {
-        min-width: 18px;
-        height: 18px;
-        padding: 0 5px;
-        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
+        padding: 0 4px;
+        font-size: 9px;
       }
 
       /* Cards more compact */
@@ -1444,9 +1456,10 @@
 
       /* Table smaller */
       th, td {
-        padding: 8px 10px !important;
+        padding: 8px 8px !important;
         font-size: 12px;
       }
+      table { min-width: unset; }
 
       /* Stats bar - reduce widths on mobile */
       .stats-bar-row { font-size: 11px; }
@@ -1507,6 +1520,40 @@
       .confirm-message { font-size: 14px; margin-bottom: 16px; }
     }
 
+    
+    /* ===== Very narrow screens (≤380px, iPhone SE, etc) ===== */
+    @media (max-width: 380px) {
+      .container { padding: 0 10px; }
+      .brand-dxs { font-size: 20px; }
+      .brand-serenade { font-size: 24px; }
+      .records-layout {
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 4px;
+      }
+      .filter-vtab {
+        padding: 6px 5px;
+        font-size: 10px;
+      }
+      .filter-vtab .badge {
+        min-width: 14px;
+        height: 14px;
+        padding: 0 3px;
+        font-size: 9px;
+      }
+      th, td {
+        padding: 7px 6px !important;
+        font-size: 11px;
+      }
+      .add-block { padding: 20px 10px; }
+      .add-block-title { font-size: 12px; line-height: 1.6; }
+      .add-block-icon { width: 40px; height: 40px; }
+      .add-block-icon svg { width: 20px; height: 20px; }
+    }
+
+    
+    @media (max-height: 600px) {
+      .filter-sidebar { position: static; }
+    }
     /* ===== Butterflies (top-down, symmetric) ===== */
     .butterflies {
       position: fixed;
@@ -2153,10 +2200,10 @@
         <div class="stats-card">
           <div class="stats-title">${ICONS.star} 應援物統計</div>
           ${sectionsHtml}
-          <div class="add-block compact" data-action="add-category">
-            <div class="add-block-icon">${ICONS.star}</div>
-            <div class="add-block-title">新增類別</div>
-          </div>
+        </div>
+        <div class="add-block compact" data-action="add-category">
+          <div class="add-block-icon">${ICONS.star}</div>
+          <div class="add-block-title">新增類別</div>
         </div>
       `;
     }
@@ -2273,10 +2320,10 @@
                   <tbody>${rowsHtml}</tbody>
                 </table>
               </div>
-              <div class="add-block compact" data-action="add-record">
-                <div class="add-block-icon">${ICONS.star}</div>
-                <div class="add-block-title">新增紀錄</div>
-              </div>
+            </div>
+            <div class="add-block compact" data-action="add-record">
+              <div class="add-block-icon">${ICONS.star}</div>
+              <div class="add-block-title">新增紀錄</div>
             </div>
           </div>
         </div>
