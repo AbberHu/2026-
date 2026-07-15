@@ -187,49 +187,43 @@
     }
     .filter-tab.active .badge { opacity: 1; }
 
-    /* ===== Records tab layout: vertical sidebar + main ===== */
+    /* ===== Records tab layout: horizontal filter bar above records ===== */
     .records-layout {
-      display: grid !important;
-      grid-template-columns: 110px minmax(0, 1fr);
-      gap: 10px;
-      align-items: start;
+      display: block;
       width: 100%;
-    }
-    @media (min-width: 640px) {
-      .records-layout {
-        grid-template-columns: 160px minmax(0, 1fr);
-        gap: 14px;
-      }
     }
     .filter-sidebar {
       display: flex !important;
-      flex-direction: column !important;
+      flex-direction: row !important;
       gap: 4px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 6px;
       box-shadow: var(--shadow-sm);
-      position: sticky;
-      top: 8px;
-      align-self: start;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
+    .filter-sidebar::-webkit-scrollbar { display: none; }
     .filter-vtab {
-      display: flex !important;
+      display: inline-flex !important;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       gap: 6px;
-      padding: 10px 10px;
+      padding: 8px 14px;
       background: transparent;
       color: var(--text-muted);
       font-size: 13px;
       font-weight: 600;
       border: none;
       border-radius: var(--radius-sm);
-      text-align: left;
       cursor: pointer;
       transition: all 0.15s;
-      width: 100%;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     .filter-vtab:hover {
       background: var(--surface-alt);
@@ -304,6 +298,18 @@
     .main-tab.active {
       color: var(--gold-bright);
       border-bottom-color: var(--gold);
+    }
+
+    .app-footer {
+      text-align: center;
+      padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+      color: var(--text-on-bg-muted);
+      font-size: 11px;
+      opacity: 0.6;
+      letter-spacing: 0.15em;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
     }
 
     /* ===== Main content ===== */
@@ -1719,6 +1725,10 @@
       <div id="list-container"></div>
     </div>
   </main>
+
+  <footer class="app-footer">
+    <div class="container">V1.0.0</div>
+  </footer>
 
 
 
