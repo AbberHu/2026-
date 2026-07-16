@@ -3048,7 +3048,7 @@
         }
         state.categoryForm = {
           name: '',
-          icon: 'emoji:🌸',
+          icon: 'emoji:⭐',
           color,
           inventory: { '7/24': 0, '7/25': 0, '7/26': 0 }
         };
@@ -3106,7 +3106,7 @@
       DATE_OPTIONS.forEach(d => { defaultInv[d] = 0; });
       state.categoryForm = {
         name: '',
-        icon: 'emoji:🌸',
+        icon: 'emoji:⭐',
         color: nextColor,
         inventory: defaultInv
       };
@@ -3124,7 +3124,7 @@
           state.editingCategoryId = null;
           const defaultInv = {};
           DATE_OPTIONS.forEach(d => { defaultInv[d] = 0; });
-          state.categoryForm = { name: '', icon: 'emoji:🌸', color: 0, inventory: defaultInv };
+          state.categoryForm = { name: '', icon: 'emoji:⭐', color: 0, inventory: defaultInv };
         }
         renderSettings();
         render();
@@ -3209,7 +3209,7 @@
         }
         const defaultInv = {};
         DATE_OPTIONS.forEach(d => { defaultInv[d] = 0; });
-        state.categoryForm = { name: '', icon: 'emoji:🌸', color: nextColor, inventory: defaultInv };
+        state.categoryForm = { name: '', icon: 'emoji:⭐', color: nextColor, inventory: defaultInv };
         openSettings();
         return;
       } else if (action === 'qty-incr' || action === 'qty-decr') {
@@ -3263,17 +3263,18 @@
         }
         const defaultInv = {};
         DATE_OPTIONS.forEach(d => { defaultInv[d] = 0; });
-        state.categoryForm = { name: '', icon: 'emoji:🌸', color: nextColor, inventory: defaultInv };
+        state.categoryForm = { name: '', icon: 'emoji:⭐', color: nextColor, inventory: defaultInv };
         renderSettings();
         return;
       } else if (action === 'save-category') {
         saveCategoryForm();
         return;
       } else if (action === 'set-cat-icon') {
-        // Sync current form field values first
+        // Sync current form field values first - iterate ALL dates, not just activeDates()
+        // (activeDates() may be empty if no categories have inventory yet, causing quantity loss)
         const nameEl = document.getElementById('cat-name-input');
         if (nameEl) state.categoryForm.name = nameEl.value;
-        activeDates().forEach(d => {
+        DATE_OPTIONS.forEach(d => {
           const el = document.getElementById('cat-inv-' + d.replace('/', ''));
           if (el) state.categoryForm.inventory[d] = parseInt(el.value, 10) || 0;
         });
