@@ -4642,8 +4642,8 @@
 
 
     // ============== Photo upload / compression / viewer ==============
-    const PHOTO_MAX_WIDTH = 600;
-    const PHOTO_QUALITY = 0.65;
+    const PHOTO_MAX_WIDTH = 350;
+    const PHOTO_QUALITY = 0.45;
     const PHOTO_MAX_COUNT = 3;
 
     // Compress an uploaded image to a base64 JPEG data URI
@@ -5017,7 +5017,7 @@
 
 
     // ============== One-time photo recompression migration ==============
-    const PHOTOS_MIGRATED_KEY = 'dxs-photos-migrated-v2';
+    const PHOTOS_MIGRATED_KEY = 'dxs-photos-migrated-v3';
 
     // Recompress a single base64 data URI to match current PHOTO_MAX_WIDTH / PHOTO_QUALITY
     function recompressPhoto(dataUri) {
